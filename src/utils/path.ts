@@ -1,3 +1,3 @@
-const path = "./uploads/";
+const path = "uploads/";
 
 export default path;

@@ -1,10 +1,12 @@
+import Reader from "./src/services/dataframe/Reader";
+import Writer from "./src/services/dataframe/Writer";
 
 class Dataframe {
 
     columns: string[];
     data: any[][];
 
-    constructor (data: any[][] = [], columns: string[] = []) {
+    constructor (columns: string[] = [], data: any[][] = []) {
         this.columns = columns;
         this.data = data;
     }
@@ -12,13 +14,13 @@ class Dataframe {
     head (n: number = 5): Dataframe {
         const data = this.data.slice(0, n);
 
-        return new Dataframe (data, this.columns);
+        return new Dataframe (this.columns, data);
     }
 
     tail (n: number = 5): Dataframe {
         const data = this.data.slice(-n);
 
-        return new Dataframe (data, this.columns);
+        return new Dataframe (this.columns, data);
     }
 
     sample (n: number = 5): Dataframe {
@@ -45,7 +47,7 @@ class Dataframe {
 
             indexes.map((i) => { samples.push(this.data[i]) });
 
-            return new Dataframe(samples, this.columns);
+            return new Dataframe(this.columns, samples);
         }
 
         return this.head();
@@ -83,11 +85,18 @@ class Dataframe {
     }
 }
 
+let reader = new Reader("test.csv");
 let df = new Dataframe();
 
-df.addColumn("names", ["petter", "anne", "bob", "zuck", "mark", "pepper", "ryan", "jonny"])
-df.addColumn("age", [12, 13, 12, 15, 16, 14, 15, 17], 1);
+(async () => {
+    df = await reader.getContent();
+    console.log(df.head());
+    console.log(" ")
 
-console.log(df.head());
-console.log(df.tail());
-console.log(df.sample());
+    df.dropColumn("age");
+    console.log(df.head());
+
+})()
+
+
+
