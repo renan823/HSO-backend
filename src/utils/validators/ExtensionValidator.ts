@@ -1,6 +1,6 @@
 class ExtensionValidator {
 
-    extensions: string[];
+    private extensions: string[];
 
     constructor () {
         this.extensions = ["csv"];

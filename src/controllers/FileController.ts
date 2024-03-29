@@ -5,7 +5,7 @@ import FileService from "../services/files/FileService";
 
 class FileController {
 
-    fileService: FileService;
+    private fileService: FileService;
 
     constructor () {
         this.fileService = new FileService();
