@@ -36,6 +36,20 @@ class DataframeController {
             return next(new ServerException());
         }
     }
+
+    async applyFiltersToDataframe (req: Request, res: Response, next: NextFunction) {
+        const { filename, filters } = req.body as { filename: string, filters: string[] };
+
+        try {
+            await this.dataframeService.applyFilter(filename, filters);
+
+            const dataframe: Dataframe = await this.dataframeService.readFromFile(filename);
+
+            return res.status(200).json({ dataframe: dataframe.sample(10) });
+        } catch (error: any) {
+            return next(new ServerException());
+        }
+    }
 }
 
 export default DataframeController

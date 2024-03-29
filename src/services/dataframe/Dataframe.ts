@@ -47,6 +47,10 @@ class Dataframe {
         }
     }
 
+    setColumns (columns: string[]): void {
+        this.columns = columns;
+    }
+
     addRow (row: any[], index: number = -1): void {
         this.data.splice(index, 0, row);
     }
@@ -57,6 +61,31 @@ class Dataframe {
         }
     }
 
+    setRows (rows: any[][]): void {
+        this.data = rows;
+    }
+
+    replace (target: string[], value: string): void {
+        this.data = this.data.map((row: any[]) => row.map((term) => target.includes(term) ? value : term ));
+    }
+
+    notNull (): void {
+        this.data = this.data.map((row: any[]) => row.map((term) => {
+            if (!term || term === "null") {
+                return "";
+            }
+
+            return term;
+        }))
+    }
+
+    applyRegExp (expression: string, subtitute: string = ""): void {
+        this.data = this.data.map((row) => row.filter((item) => `${item}`.replace(expression, subtitute)));
+    }
+
+    applyFilter (filter: any): void {
+        this.data = this.data.map(filter);
+    }
 }
 
 export default Dataframe;

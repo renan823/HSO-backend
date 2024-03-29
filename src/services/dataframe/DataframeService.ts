@@ -1,4 +1,5 @@
 import Dataframe from "./Dataframe";
+import Filter from "./Filter";
 import Reader from "./Reader";
 import Writer from "./Writer";
 
@@ -29,6 +30,16 @@ class DataframeService {
             const dataframe = await this.readFromFile(file);
 
             dataframe.dropColumn(column);
+
+            await this.saveToFile(file, dataframe);
+        }
+    }
+
+    async applyFilter (file: string, filters: string[]) {
+        if (file.trim().length !== 0) {
+            const dataframe = await this.readFromFile(file);
+
+            filters.map((filter) => dataframe.applyFilter(new Filter(filter).apply));
 
             await this.saveToFile(file, dataframe);
         }

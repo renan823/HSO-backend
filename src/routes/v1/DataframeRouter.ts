@@ -17,6 +17,8 @@ class DataframeRouter {
         this.handler.get("/:filename", this.controller.readDataframe);
 
         this.handler.post("/alter/drop", this.controller.dropDataframeColumn);
+
+        this.handler.post("/alter/filter",this.controller.applyFiltersToDataframe);
     }
 }
 
