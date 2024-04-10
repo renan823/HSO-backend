@@ -1,6 +1,7 @@
 import multer from "multer";
 import { Request } from "express";
 import ServerException from "../utils/errors/ServerException";
+import ExtensionValidator from "../utils/validators/ExtensionValidator";
 
 const storage = multer.diskStorage({
     destination: (req: Request, file: any, cb: any) => {

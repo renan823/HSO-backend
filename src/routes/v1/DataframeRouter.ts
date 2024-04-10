@@ -19,6 +19,8 @@ class DataframeRouter {
         this.handler.post("/alter/drop", this.controller.dropDataframeColumn);
 
         this.handler.post("/alter/filter",this.controller.applyFiltersToDataframe);
+
+        this.handler.post("/alter/replace",this.controller.replaceDataframeWords);
     }
 }
 

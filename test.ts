@@ -1,19 +1,23 @@
 import Dataframe from "./src/services/dataframe/Dataframe";
-import Reader from "./src/services/dataframe/Reader";
-import Writer from "./src/services/dataframe/Writer";
+import Thesaurus from "./src/services/thesaurus/Thesaurus";
 
+let t = new Thesaurus();
+let d = new Dataframe();
 
-let reader = new Reader("test.csv");
-let df = new Dataframe();
+d.columns = ["word1", "word2", "word3"];
 
-(async () => {
-    df = await reader.getContent();
-    console.log(df.head());
-    console.log(" ")
+d.addRow(["tdic", "tidc", "tdics"]);
+d.addRow(["carro", "tidc", "carros"]);
+d.addRow(["paralelepipedo", "tdic", "carro"]);
+d.addRow(["tidcs", "quarto", "arroz"]);
 
-    df.replace(["brazil"], "italy");
-    console.log(df.head());
-})()
+console.log(d.head());
 
+t.fillWithDataframe(d)
 
+t.setSynonyms("carro", ["carros"]);
+t.setSynonyms("carros", ["carro"]);
+t.setSynonyms("arroz", []);
 
+console.log(t.show())
+console.log(t.generateEntries())

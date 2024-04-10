@@ -3,6 +3,8 @@ import path from "../../utils/path";
 
 class FileService {
 
+    constructor () {};
+
     async listAll (): Promise<string[]> {
         const files: string[] = await readdir(path);
 

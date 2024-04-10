@@ -9,17 +9,21 @@ class Filter {
     apply () {
         switch (this.type) {
             case "lower": 
-                return (row: any[]) => row.filter((item: any) => `${item}`.toLowerCase());
+                return (row: any[]) => row.map((item: any) => { console.log(item); return`${item}`.toLowerCase()});
 
             case "upper": 
-                return (row: any[]) => row.filter((item: any) => `${item}`.toUpperCase());
+                return (row: any[]) => row.map((item: any) => `${item}`.toUpperCase());
 
             case "trim": 
-                return (row: any[]) => row.filter((item: any) => `${item}`.trim());
+                return (row: any[]) => row.map((item: any) => `${item}`.trim().replace(/[^\w\s]/gi, ""));
             
             case "normalize": 
-                return (row: any[]) => row.filter((item: any) => `${item}`.normalize("NFD"));
+                return (row: any[]) => row.map((item: any) => { console.log(item); return`${item}`.normalize("NFD").replace(/[\u0300-\u036f]/g, "")});
         }
+    }
+
+    handle () {
+        return (row: any[]) => row.map((item: any) => `${item}`.toLowerCase());
     }
 }
 

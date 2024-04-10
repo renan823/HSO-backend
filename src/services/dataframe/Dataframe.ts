@@ -52,7 +52,9 @@ class Dataframe {
     }
 
     addRow (row: any[], index: number = -1): void {
-        this.data.splice(index, 0, row);
+        if (row.length !== 0) {
+            this.data.splice(index, 0, row);
+        }
     }
 
     dropRow (index: number): void {
@@ -79,12 +81,44 @@ class Dataframe {
         }))
     }
 
-    applyRegExp (expression: string, subtitute: string = ""): void {
-        this.data = this.data.map((row) => row.filter((item) => `${item}`.replace(expression, subtitute)));
+    applyReplace (expression: string, subtitute: string = ""): void {
+        this.data = this.data.map((row) => row.map((item) => `${item}`.replace(expression, subtitute)));
     }
 
     applyFilter (filter: any): void {
         this.data = this.data.map(filter);
+    }
+
+    fromJSON (entries: any[]): void {
+        if (entries.length !== 0) {
+            this.columns = Object.keys(entries[0]);
+
+            entries.shift();
+
+            entries.forEach((entry: any) => {
+                let row: any[] = [];
+
+                this.columns.forEach((column) => {
+                    row.push(entry[column]);
+                })
+
+                this.addRow(row);
+            })
+        }
+    }
+
+    exportJSON (): any[] {
+        const entries: any[] = this.data.map((row) => {
+            let entry: any = {}
+            row.map((item, index) => {
+                if (index < this.columns.length) {
+                    entry[`${this.columns[index]}`] = item;
+                }
+            })
+            return entry;
+        })
+        
+        return entries;
     }
 }
 

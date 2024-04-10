@@ -17,8 +17,10 @@ class DataframeService {
         return new Dataframe();
     }
 
-    async saveToFile (file: string, content: Dataframe): Promise<void> {
+    async saveToFile (file: string, dataframe: Dataframe): Promise<void> {
         if (file.trim().length !== 0) {
+            const content = dataframe.exportJSON();
+
             const writer = new Writer(file, content);
             
             writer.saveContent();
@@ -39,7 +41,17 @@ class DataframeService {
         if (file.trim().length !== 0) {
             const dataframe = await this.readFromFile(file);
 
-            filters.map((filter) => dataframe.applyFilter(new Filter(filter).apply));
+            filters.map((filter) => dataframe.applyFilter(new Filter(filter).apply()));
+
+            await this.saveToFile(file, dataframe);
+        }
+    }
+
+    async replaceWords (file: string, words: string[], substitutes: string[]) {
+        if (file.trim().length !== 0) {
+            const dataframe = await this.readFromFile(file);
+
+            words.map((word, index) => dataframe.applyReplace(word, substitutes[index]));
 
             await this.saveToFile(file, dataframe);
         }

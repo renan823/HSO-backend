@@ -15,9 +15,9 @@ class FileRouter {
     }
 
     private setRoutes (): void {
-        this.handler.get("/all", uploadMiddleware.single("file"), this.controller.findAllFiles);
+        this.handler.get("/all", this.controller.findAllFiles);
 
-        this.handler.post("/save", this.controller.saveNewFile);
+        this.handler.post("/save", uploadMiddleware.single("file"), this.controller.saveNewFile);
     }
 }
 

@@ -1,34 +1,27 @@
-import { createWriteStream } from "fs";
-import Dataframe from "./Dataframe";
 import path from "../../utils/path";
 import ServerException from "../../utils/errors/ServerException";
+import { utils, writeFile } from "xlsx";
 
 class Writer {
     
     private filename: string;
-    private content: Dataframe;
+    private content: any[];
 
-    constructor (name: string, content: Dataframe) {
+    constructor (name: string, content: any[]) {
         this.filename = name;
         this.content = content;
     }
 
     saveContent (): void {
-        const separator = ",";
-
         try {
-            const writer = createWriteStream(`${path}${this.filename}`, { flags: 'w' });
+            const workbook = utils.book_new();
+            const worksheet = utils.json_to_sheet(this.content);
 
-            const columns = this.content.columns.join(separator);
-            writer.write(columns+"\n");
+            utils.book_append_sheet(workbook, worksheet, "default");
 
-            const rows = this.content.data;
-
-            rows.map((row: any[]) => { writer.write(row.join(separator)+"\n")});
-
-            writer.end();
+            writeFile(workbook, `${path}${this.filename}`);
         } catch (error: any) {
-            throw new ServerException();
+            throw new ServerException("Erro na gravação do arquivo", 500);
         }
     }
 }

@@ -1,6 +1,7 @@
-import { readFile } from "fs/promises";
+import ServerException from "../../utils/errors/ServerException";
 import path from "../../utils/path";
 import Dataframe from "./Dataframe";
+import { readFile, utils } from "xlsx";
 
 class Reader {
 
@@ -11,25 +12,21 @@ class Reader {
     }
 
     async getContent (): Promise<Dataframe> {
-        const separator = ",";
+        const dataframe = new Dataframe();
 
         try {
-            const data = await readFile(`${path}${this.filename}`, { encoding: "utf-8" });
+            const workbook = readFile(`${path}${this.filename}`, { cellDates: true });
 
-            const rows = data.split(/\n/);
-            const header = rows[0];
+            const worksheet = workbook.Sheets[workbook.SheetNames[0]];
 
-            const columns = header.split(separator);
+            const data = utils.sheet_to_json(worksheet);
 
-            const dataframe = new Dataframe(columns);
-
-            rows.shift();
-            rows.map((row) => { row !== "" ? dataframe.addRow(row.split(separator)) : null });
-
-            return dataframe;
+            dataframe.fromJSON(data);
         } catch (error: any) {
-            return new Dataframe();
+            throw new ServerException("Erro na leitura do arquivo", 500);
         }
+        
+        return dataframe;
     }
 }
 
