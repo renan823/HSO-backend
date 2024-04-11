@@ -4,6 +4,7 @@ import cors from "cors";
 import ErrorMiddleware from "./middlewares/ErrorMiddleware";
 import FileRouter from "./routes/v1/FileRouter";
 import DataframeRouter from "./routes/v1/DataframeRouter";
+import ThesaurusRouter from "./routes/v1/ThesaurusRouter";
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(cors({ origin: "http://localhost:3000" }));
 
 app.use("/api/files", new FileRouter().handler);
 app.use("/api/dataframes", new DataframeRouter().handler);
+app.use("/api/thesaurus", new ThesaurusRouter().handler);
 
 app.use(new ErrorMiddleware().handle);
 

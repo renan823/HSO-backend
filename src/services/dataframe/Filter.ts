@@ -15,7 +15,7 @@ class Filter {
                 return (row: any[]) => row.map((item: any) => `${item}`.toUpperCase());
 
             case "trim": 
-                return (row: any[]) => row.map((item: any) => `${item}`.trim().replace(/[^\w\s]/gi, ""));
+                return (row: any[]) => row.map((item: any) => `${item}`.trim().normalize("NFD").replace(/[^\w\s]/gi, ""));
             
             case "normalize": 
                 return (row: any[]) => row.map((item: any) => { console.log(item); return`${item}`.normalize("NFD").replace(/[\u0300-\u036f]/g, "")});

@@ -3,8 +3,8 @@ import Dataframe from "../dataframe/Dataframe";
 
 class Thesaurus {
 
-    private synonyms: Map<string, string[]>;
-    private weight: number;
+    synonyms: Map<string, string[]>;
+    weight: number;
 
     constructor () {
         this.synonyms = new Map<string, string[]>;
@@ -16,7 +16,7 @@ class Thesaurus {
     }
 
     private addWord (word: string): void {
-        if (!this.synonyms.has(word)) {
+        if (word.trim().length !== 0 && !this.synonyms.has(word)) {
             this.synonyms.set(word, []);
         }
     }
@@ -67,21 +67,24 @@ class Thesaurus {
         this.synonyms.set(word, synonyms);
     }
 
-    fillWithDataframe (dataframe: Dataframe): void {
-        dataframe.data.map((row) => {
-            row.map((term) => {
-                dataframe.data.map((line) => { 
-                    line.map((item) => {
-
-                        this.addWord(term);
-                        this.addWord(item);
-
-                        if (this.isSynonym([term, item])) {
-                            this.addSynonym([term, item]);
-                        }
+    async fillWithDataframe (dataframe: Dataframe): Promise<void> {
+        return new Promise((resolve, reject) => {
+            dataframe.data.map((row) => {
+                row.map((term) => {
+                    dataframe.data.map((line) => { 
+                        line.map((item) => {
+    
+                            this.addWord(term);
+                            this.addWord(item);
+    
+                            if (this.isSynonym([term, item])) {
+                                this.addSynonym([term, item]);
+                            }
+                        })
                     })
                 })
             })
+            resolve();
         })
     }
 
@@ -101,8 +104,14 @@ class Thesaurus {
         return entries;
     }
 
-    show (): Map<string, string[]> {
-        return this.synonyms;
+    generateJSON (): object {
+        let data: any = {};
+
+        this.synonyms.forEach((value, key) => {
+            data[`${key}`.trim()] = value;
+        })
+    
+        return data;
     }
 }
 
