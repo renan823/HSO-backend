@@ -5,6 +5,7 @@ import ErrorMiddleware from "./middlewares/ErrorMiddleware";
 import FileRouter from "./routes/v1/FileRouter";
 import DataframeRouter from "./routes/v1/DataframeRouter";
 import ThesaurusRouter from "./routes/v1/ThesaurusRouter";
+import NetworkRouter from "./routes/v1/NetworkRouter";
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(cors({ origin: "http://localhost:3000" }));
 app.use("/api/files", new FileRouter().handler);
 app.use("/api/dataframes", new DataframeRouter().handler);
 app.use("/api/thesaurus", new ThesaurusRouter().handler);
+app.use("/api/network", new NetworkRouter().handler);
 
 app.use(new ErrorMiddleware().handle);
 

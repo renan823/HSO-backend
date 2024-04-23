@@ -9,7 +9,8 @@ class ThesaurusController {
         const thesaurusService = new ThesaurusService();
 
         const thesaurus = thesaurusService.getEmptyThesaurus();
-        return res.status(200).json({ thesaurus: thesaurus.generateJSON() });
+
+        return res.status(200).json({ thesaurus: thesaurus.generateJSONFromSynonyms() });
     }
 
     async fillThesaurus (req: Request, res: Response, next: NextFunction) {
@@ -19,8 +20,7 @@ class ThesaurusController {
 
         const thesaurus = await thesaurusService.fillThesaurusWithDataframe(filename);
 
-
-        return res.status(200).json({ thesaurus: thesaurus.generateJSON() });
+        return res.status(200).json({ thesaurus: thesaurus.generateJSONFromSynonyms() });
     }
 }
 

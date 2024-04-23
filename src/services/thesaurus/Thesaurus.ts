@@ -104,11 +104,13 @@ class Thesaurus {
         return entries;
     }
 
-    generateJSON (): object {
+    generateJSONFromSynonyms (): object {
         let data: any = {};
 
         this.synonyms.forEach((value, key) => {
-            data[`${key}`.trim()] = value;
+            if (value.length !== 0) {
+                data[`${key}`.trim()] = value;
+            }
         })
     
         return data;

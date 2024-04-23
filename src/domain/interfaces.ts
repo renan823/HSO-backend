@@ -1,1 +1,3 @@
-//nothing here
+export interface NetworkData {
+    [Key: string]: string[]   
+}
