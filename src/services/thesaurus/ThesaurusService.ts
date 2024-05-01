@@ -121,10 +121,8 @@ class ThesaurusService {
             const synonyms = await prisma.synonym.findMany();
             const thesaurus = new Thesaurus();
 
-            console.log(synonyms)
-
             if (synonyms) {
-                return new Promise((resolve, reject) => {
+                return new Promise((resolve) => {
                     synonyms.forEach(synonym => thesaurus.addSynonym(this.splitId(synonym.id)));
                     resolve(thesaurus);
                 });

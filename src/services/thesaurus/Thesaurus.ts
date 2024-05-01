@@ -47,10 +47,6 @@ class Thesaurus {
         }
     }
 
-    removeSynonym (words: string[]): void {
-        
-    }
-
     isSynonym (words: string[]): boolean {
         let [w1, w2] = this.sortWords(words);
 
@@ -63,12 +59,8 @@ class Thesaurus {
         return levenshtein.distance <= this.weight;
     }
 
-    setSynonyms (word: string, synonyms: string[]): void {
-        this.synonyms.set(word, synonyms);
-    }
-
     async fillWithDataframe (dataframe: Dataframe): Promise<void> {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             dataframe.data.map((row) => {
                 row.map((term) => {
                     dataframe.data.map((line) => { 
