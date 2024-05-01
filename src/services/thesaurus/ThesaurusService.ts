@@ -5,10 +5,6 @@ import ServerException from "../../utils/errors/ServerException";
 
 class ThesaurusService {
 
-    getEmptyThesaurus (): Thesaurus {
-        return new Thesaurus();
-    }
-
     private generateId (words: string[]): string {
         return words.sort().join("<->");
     }
@@ -90,20 +86,11 @@ class ThesaurusService {
         const prisma = new PrismaClient();
 
         try {
-            let id =  this.generateId([word, synonym]);
-
-            let a = await prisma.synonym.findMany();
-
-            console.log(a);
+            const id =  this.generateId([word, synonym]);
 
             await prisma.synonym.deleteMany({ 
                 where: { id } 
             });
-            
-            a = await prisma.synonym.findMany();
-
-            console.log(a);
-
         } catch (error: any) {
             throw new ServerException("Erro ao excluir palavra");
         }
@@ -130,13 +117,32 @@ class ThesaurusService {
         const prisma = new PrismaClient();
 
         try {
+
             const synonyms = await prisma.synonym.findMany();
             const thesaurus = new Thesaurus();
 
-            return new Promise((resolve, reject) => {
-                synonyms.forEach(synonym => thesaurus.addSynonym(this.splitId(synonym.id)));
-                resolve(thesaurus);
-            });
+            console.log(synonyms)
+
+            if (synonyms) {
+                return new Promise((resolve, reject) => {
+                    synonyms.forEach(synonym => thesaurus.addSynonym(this.splitId(synonym.id)));
+                    resolve(thesaurus);
+                });
+            }
+
+            return thesaurus;
+        } catch (error: any) {
+            throw new ServerException("Erro ao gerar o thesasurus");
+        }
+    }
+
+    async destroyThesaurus (): Promise<Thesaurus> {
+        const prisma = new PrismaClient();
+
+        try {
+            await prisma.synonym.deleteMany();
+
+            return new Thesaurus();
         } catch (error: any) {
             throw new ServerException("Erro ao gerar o thesasurus");
         }
