@@ -1,6 +1,6 @@
 import ServerException from "../../utils/errors/ServerException";
 import path from "../../utils/path";
-import Dataframe from "./Dataframe";
+import Dataframe from "../dataframe/Dataframe";
 import { readFile, utils } from "xlsx";
 
 class Reader {

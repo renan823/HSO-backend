@@ -1,23 +1,15 @@
-import Dataframe from "./src/services/dataframe/Dataframe";
+import DataframeService from "./src/services/dataframe/DataframeService";
 import Thesaurus from "./src/services/thesaurus/Thesaurus";
 
-let t = new Thesaurus();
-let d = new Dataframe();
+const thesaurus = new Thesaurus;
+const service = new DataframeService();
 
-d.columns = ["word1", "word2", "word3"];
 
-d.addRow(["tdic", "tidc", "tdics"]);
-d.addRow(["carro", "tidc", "carros"]);
-d.addRow(["paralelepipedo", "tdic", "carro"]);
-d.addRow(["tidcs", "quarto", "arroz"]);
+(async () => {
+    const dataframe = await service.readFromFile("2024-04-10T22:42:49.xlsx");
+    await thesaurus.fillWithDataframe(dataframe);
 
-console.log(d.head());
+    console.log(thesaurus.generateJSON())
+    console.log(thesaurus.generateEntries())
+})()
 
-t.fillWithDataframe(d)
-
-t.setSynonyms("carro", ["carros"]);
-t.setSynonyms("carros", ["carro"]);
-t.setSynonyms("arroz", []);
-
-console.log(t.show())
-console.log(t.generateEntries())

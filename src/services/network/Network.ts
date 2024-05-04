@@ -1,62 +1,30 @@
-import { NetworkData } from "../../domain/interfaces";
-import Edge from "./Edge";
-import Node from "./Node";
+import Graph from "graphology";
+import { SerializedGraph } from "graphology-types";
 
 class Network {
 
-    private nodes: Map<string, Node>;
-    private edges: Map<string, Edge>;
+    graph: Graph
 
     constructor () {
-        this.nodes = new Map<string, Node>;
-        this.edges = new Map<string, Edge>;
+        this.graph = new Graph();
     }
 
-    private addNode (node: string): void {
-        if (!this.nodes.has(node)) {
-            this.nodes.set(node, new Node(1, node));
-        } else {
-            this.nodes.get(node)?.addWeight(0.1);
-        }
-    }
-
-    private addEdge (from: string, to: string): void {
-        let id = [from, to].sort().join("<->");
-        if (!this.edges.has(id)) {
-            this.edges.set(id, new Edge(from, to, 1));
-        } else {
-            this.edges.get(id)?.addWeight(0.001);
-        }
-    }
-
-    fillNetwork (data: NetworkData): void {
-        Object.entries(data).forEach(([key, values]) => {
-            this.addNode(key);
-            let n1 = this.nodes.get(key)?.getId() ?? "";
-
-            values.forEach((value) => {
-                this.addNode(value);
-                if (key !== value) {
-                    let n2 = this.nodes.get(value)?.getId() ?? "";
-                    this.addEdge(n1, n2);
-                }
-            })
+    addNode (node: string): void {
+        this.graph.updateNode(node, (attr) => {
+            return { ...attr, weight: (attr.weight || 0) + 1 };
         })
     }
 
-    exportNetwork (): any[] {
-        let elements: any[] = [];
+    addEdge (nodes: string[]) {
+        nodes = nodes.sort();
 
-        this.nodes.forEach((node) => {
-            elements.push({ group: "nodes", data: { ...node.toObject() } });
+        this.graph.updateEdge(nodes[0], nodes[1], (attr) => {
+            return { ...attr, weight: (attr.weight || 0) + 1 };
         })
+    }
 
-        this.edges.forEach((edge) => {
-            console.log(edge.toObject())
-            elements.push({ group: "edges", data: { ...edge.toObject() } });
-        })
-
-        return elements;
+    export (): SerializedGraph {
+        return this.graph.export();
     }
 }
 

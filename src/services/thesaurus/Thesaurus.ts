@@ -1,62 +1,33 @@
 import Levenshtein from "levenshtein";
+import Network from "../network/Network";
 import Dataframe from "../dataframe/Dataframe";
 
 class Thesaurus {
 
-    synonyms: Map<string, string[]>;
+    data: Network;
     weight: number;
 
     constructor () {
-        this.synonyms = new Map<string, string[]>;
-        this.weight = 2;
-    }
-
-    private sortWords (words: string[]): string[] {
-        return words.sort();
+        this.data = new Network();
+        this.weight = 2.5;
     }
 
     private addWord (word: string): void {
-        if (word.trim().length !== 0 && !this.synonyms.has(word)) {
-            this.synonyms.set(word, []);
-        }
+        this.data.addNode(word);
     }
 
-    removeWord (word: string): void {
-        this.synonyms.forEach((values) => {
-            let location = values.indexOf(word);
-            if (location >= 0) {
-                values.splice(location, 1);
-            }
-        })
-
-        this.synonyms.delete(word);
+    private addSynonym (words: string[]): void {
+        this.data.addEdge(words.sort());
     }
 
-    addSynonym (words: string[]): void {
-        let [w1, w2] = this.sortWords(words);
+    private isSynonym (words: string[]): boolean {
+        if (words[0] !== words[1]) {
+            const distance = new Levenshtein(words[0], words[1]).distance;
 
-        this.addWord(w1);
-        this.addWord(w2);
-
-        if (!this.synonyms.get(w1)?.includes(w2)) {
-            this.synonyms.get(w1)?.push(w2);
+            return distance <= this.weight;
         }
 
-        if (!this.synonyms.get(w2)?.includes(w1)) {
-            this.synonyms.get(w2)?.push(w1);
-        }
-    }
-
-    isSynonym (words: string[]): boolean {
-        let [w1, w2] = this.sortWords(words);
-
-        if (w1 === w2) {
-            return false;
-        }
-
-        let levenshtein = new Levenshtein(w1, w2);
-
-        return levenshtein.distance <= this.weight;
+        return false;
     }
 
     async fillWithDataframe (dataframe: Dataframe): Promise<void> {
@@ -80,32 +51,22 @@ class Thesaurus {
         })
     }
 
-    generateEntries (): any[][] {
-        let entries: any[][] = [];
-
-        this.synonyms.forEach((values, key) => {
-            values.map((value) => {
-                let entry = this.sortWords([value, key]);
-
-                if (!entries.some(e => e[0] === entry[0] && e[1] === entry[1])) {
-                    entries.push(entry);
-                }
-            })
-        })
+    generateEntries (): string[][] {
+        const entries = this.data.graph.mapEdges((_, __, source, target) => [source, target]);
 
         return entries;
     }
 
-    generateJSONFromSynonyms (): object {
-        let data: any = {};
-
-        this.synonyms.forEach((value, key) => {
-            if (value.length !== 0) {
-                data[`${key}`.trim()] = value;
-            }
+    generateJSON (): Object {
+        const data = new Map<string, string[]>()
+        
+        this.data.graph.forEachNode((node) => {
+            data.set(node, this.data.graph.neighbors(node));
         })
-    
-        return data;
+
+        const json: Object = Object.fromEntries(data);
+        
+        return json;
     }
 }
 

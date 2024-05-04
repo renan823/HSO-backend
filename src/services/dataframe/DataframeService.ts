@@ -1,7 +1,7 @@
 import Dataframe from "./Dataframe";
 import Filter from "./Filter";
-import Reader from "./Reader";
-import Writer from "./Writer";
+import Reader from "../files/Reader";
+import Writer from "../files/Writer";
 
 class DataframeService {
 

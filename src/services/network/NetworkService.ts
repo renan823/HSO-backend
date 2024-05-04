@@ -1,16 +1,12 @@
-import { NetworkData } from "../../domain/interfaces";
+import { SerializedGraph } from "graphology-types";
 import Network from "./Network";
 
 class NetworkService {
 
     constructor () {};
 
-    async createNetwork (data: NetworkData): Promise<any[]> {
-        let network = new Network();
-
-        network.fillNetwork(data);
-        
-        return network.exportNetwork();
+    async createNetwork (data: any): Promise<SerializedGraph> {
+        return new Network().export();
     }
 }
 
