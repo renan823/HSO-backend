@@ -10,9 +10,7 @@ class NetworkController {
     async generateNetwork (req: Request, res: Response, next: NextFunction) {
         const networkService = new NetworkService();
 
-        const { data } = req.body as { data: NetworkData };
-
-        const network: SerializedGraph = await networkService.createNetwork(data);
+        const network: SerializedGraph = await networkService.createNetwork();
 
         return res.status(201).json({ network });
     }

@@ -14,11 +14,14 @@ class Thesaurus {
     }
 
     private addWord (word: string): void {
-        this.data.addNode(word);
+        this.data.graph.mergeNode(word);
     }
 
     addSynonym (words: string[]): void {
-        this.data.addEdge(words.sort());
+        this.addWord(words[0]);
+        this.addWord(words[1]);
+
+        this.data.graph.addEdge(words[0], words[1]);
     }
 
     private isSynonym (words: string[]): boolean {
@@ -37,9 +40,6 @@ class Thesaurus {
                 row.map((term) => {
                     dataframe.data.map((line) => { 
                         line.map((item) => {
-    
-                            this.addWord(term);
-                            this.addWord(item);
     
                             if (this.isSynonym([term, item])) {
                                 this.addSynonym([term, item]);

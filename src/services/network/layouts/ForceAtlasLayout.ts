@@ -8,7 +8,7 @@ class ForceAtlasLayout implements Layout {
     handle(graph: Graph): void {
         new RandomLayout().handle(graph);
 
-        const iterations = 20;
+        const iterations = 600;
 
         forceAtlas2.assign(graph, iterations);
     }
