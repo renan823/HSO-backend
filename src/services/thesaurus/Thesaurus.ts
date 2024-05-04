@@ -1,6 +1,7 @@
 import Levenshtein from "levenshtein";
 import Network from "../network/Network";
 import Dataframe from "../dataframe/Dataframe";
+import { SerializedGraph } from "graphology-types";
 
 class Thesaurus {
 
@@ -16,7 +17,7 @@ class Thesaurus {
         this.data.addNode(word);
     }
 
-    private addSynonym (words: string[]): void {
+    addSynonym (words: string[]): void {
         this.data.addEdge(words.sort());
     }
 
@@ -24,7 +25,7 @@ class Thesaurus {
         if (words[0] !== words[1]) {
             const distance = new Levenshtein(words[0], words[1]).distance;
 
-            return distance <= this.weight;
+            return (distance <= this.weight);
         }
 
         return false;
@@ -52,21 +53,21 @@ class Thesaurus {
     }
 
     generateEntries (): string[][] {
-        const entries = this.data.graph.mapEdges((_, __, source, target) => [source, target]);
-
-        return entries;
+        return (this.data.graph.mapEdges((_, __, source, target) => [source, target]));
     }
 
     generateJSON (): Object {
-        const data = new Map<string, string[]>()
+        const data = new Map<string, string[]>();
         
         this.data.graph.forEachNode((node) => {
             data.set(node, this.data.graph.neighbors(node));
         })
 
-        const json: Object = Object.fromEntries(data);
-        
-        return json;
+        return (Object.fromEntries(data));
+    }
+
+    generateNetwork (): SerializedGraph {
+        return (this.data.export());
     }
 }
 

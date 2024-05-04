@@ -11,7 +11,7 @@ class ThesaurusController {
 
         const thesaurus = await thesaurusService.getFullThesaurus();
 
-        return res.status(200).json({ thesaurus: thesaurus.generateJSONFromSynonyms() });
+        return res.status(200).json({ thesaurus: thesaurus.generateJSON() });
     }
 
     async fillThesaurus (req: Request, res: Response, next: NextFunction) {
@@ -22,7 +22,7 @@ class ThesaurusController {
 
             const thesaurus = await thesaurusService.fillThesaurusWithDataframe(filename);
 
-            return res.status(200).json({ thesaurus: thesaurus.generateJSONFromSynonyms() });
+            return res.status(200).json({ thesaurus: thesaurus.generateJSON() });
         } catch (error: any) {
             next(new ServerException("Erro ao gerar o thesasurus"));
         }
@@ -38,7 +38,7 @@ class ThesaurusController {
 
             const thesaurus = await thesaurusService.getFullThesaurus();
 
-            return res.status(200).json({ message: "Conexão adicionada", thesaurus: thesaurus.generateJSONFromSynonyms() });
+            return res.status(200).json({ message: "Conexão adicionada", thesaurus: thesaurus.generateJSON() });
         } catch (error: any) {
             next(new ServerException("Erro ao gerar o thesasurus"));
         }
@@ -54,7 +54,7 @@ class ThesaurusController {
 
             const thesaurus = await thesaurusService.getFullThesaurus();
 
-            return res.status(200).json({ message: "Conexão removida", thesaurus: thesaurus.generateJSONFromSynonyms() });
+            return res.status(200).json({ message: "Conexão removida", thesaurus: thesaurus.generateJSON() });
         } catch (error: any) {
             next(new ServerException("Erro ao gerar o thesasurus"));
         }
@@ -70,7 +70,7 @@ class ThesaurusController {
 
             const thesasurus = await thesaurusService.getFullThesaurus();
 
-            return res.status(200).json({ message: "Palavra removida", thesasurus: thesasurus.generateJSONFromSynonyms() });
+            return res.status(200).json({ message: "Palavra removida", thesasurus: thesasurus.generateJSON() });
         } catch (error: any) {
             next(new ServerException("Erro ao gerar o thesasurus"));
         }
@@ -82,7 +82,7 @@ class ThesaurusController {
         try {
             const thesaurus = await thesasurusService.destroyThesaurus();
 
-            return res.status(200).json({ message: "Thesaurus limpo", thesaurus: thesaurus.generateJSONFromSynonyms() });
+            return res.status(200).json({ message: "Thesaurus limpo", thesaurus: thesaurus.generateJSON() });
         } catch (error: any) {
             next(new ServerException("Erro ao gerar o thesasurus"));
         }

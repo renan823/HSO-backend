@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import NetworkService from "../services/network/NetworkService";
 import { NetworkData } from "../domain/interfaces";
+import { SerializedGraph } from "graphology-types";
 
 class NetworkController {
 
@@ -11,7 +12,7 @@ class NetworkController {
 
         const { data } = req.body as { data: NetworkData };
 
-        const network: any[] = await networkService.createNetwork(data);
+        const network: SerializedGraph = await networkService.createNetwork(data);
 
         return res.status(201).json({ network });
     }
