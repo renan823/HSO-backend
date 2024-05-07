@@ -40,7 +40,6 @@ class Thesaurus {
                 row.map((term) => {
                     dataframe.data.map((line) => { 
                         line.map((item) => {
-    
                             if (this.isSynonym([term, item])) {
                                 this.addSynonym([term, item]);
                             }

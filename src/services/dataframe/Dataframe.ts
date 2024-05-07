@@ -1,3 +1,5 @@
+import Thesaurus from "../thesaurus/Thesaurus";
+
 class Dataframe {
 
     columns: string[];
@@ -119,6 +121,15 @@ class Dataframe {
         })
         
         return entries;
+    }
+
+    async applyThesaurus (thesaurus: Thesaurus): Promise<void> {
+        return new Promise((resolve) => {
+            thesaurus.data.graph.forEachNode(node => {
+                this.data = this.data.map((row) => row.map((item) => thesaurus.data.graph.neighbors(node).includes(`${item}`) ? node : `${item}`));
+            })
+            resolve();
+        })
     }
 }
 
