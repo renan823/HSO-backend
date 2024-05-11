@@ -1,8 +1,6 @@
 import { SerializedGraph } from "graphology-types";
 import Network from "./Network";
 import ThesaurusService from "../thesaurus/ThesaurusService";
-import RandomLayout from "./layouts/RandomLayout";
-import ForceAtlasLayout from "./layouts/ForceAtlasLayout";
 import DataframeService from "../dataframe/DataframeService";
 import ServerException from "../../utils/errors/ServerException";
 
@@ -39,7 +37,7 @@ class NetworkService {
                 network.applyNodeSize();
                 network.applyNodeColor();
 
-                network.applyLayout(new ForceAtlasLayout());
+                network.applyLayout();
 
                 resolve();
             })

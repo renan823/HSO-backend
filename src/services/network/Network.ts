@@ -1,7 +1,7 @@
 import Graph from "graphology";
 import { SerializedGraph } from "graphology-types";
-import Layout from "./layouts/Layout";
 import Color from "../../utils/Color";
+import random from "graphology-layout/random";
 
 class Network {
 
@@ -39,8 +39,8 @@ class Network {
         return { hue: 270 - ((degree / 100) * 60), saturation: 0.8, value: 1 };
     }
 
-    applyLayout (layout: Layout): void {
-        layout.handle(this.graph);
+    applyLayout (): void {
+        random.assign(this.graph);
     }
 
     applyNodePosition (): void {
