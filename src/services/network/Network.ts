@@ -12,12 +12,14 @@ class Network {
     }
 
     addNode (node: string): void {
-        this.graph.addNode(node);
+        this.graph.mergeNode(node);
     }
 
     addEdge (nodes: string[]) {
-        nodes = nodes.sort();
-        this.graph.addEdge(nodes[0], nodes[1]);
+        if (nodes[0].trim().length !== 0 && nodes[1].trim().length) {
+            nodes = nodes.sort();
+            this.graph.mergeEdge(nodes[0], nodes[1]);
+        }
     }
 
     export (): SerializedGraph {
@@ -33,7 +35,7 @@ class Network {
     }
 
     degreeToHSV (degree: number) {
-        //hue esta na faixa do roxo
+        //hue for purple-like colors
         return { hue: 270 - ((degree / 100) * 60), saturation: 0.5, value: 1 };
     }
 

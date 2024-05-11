@@ -22,23 +22,18 @@ class NetworkService {
             await dataframe.applyThesaurus(thesaurus);
 
             await new Promise<void>((resolve) => {
-                dataframe.data.forEach((row: any[]) => {
-                    row.forEach((word: string) => {
-                        if (word && word.trim().length !== 0) {
-                            row.forEach((synonym: string) => {
-                                if (synonym && synonym.trim().length !== 0 && synonym !== word) {
-                                    console.log(word, synonym)
-                                }
-                            })
-                        }
-                    })
+                dataframe.exportRelationSet().forEach((row: Array<any>) => {
+                    row.forEach((perm: Array<any>) => {
+                        network.addNode(perm[0]);
+                        network.addNode(perm[1]);
+                        network.addEdge(perm)
+                    });
                 })
+
                 resolve();
             })
-        
-            await new Promise<void>((resolve) => {
-                network.import(thesaurus.generateNetwork());
 
+            await new Promise<void>((resolve) => {
                 network.applyNodePosition();
                 network.applyNodeLabel();
                 network.applyNodeSize();
@@ -48,6 +43,8 @@ class NetworkService {
 
                 resolve();
             })
+
+            console.log("aoba")
 
             return network.export();
         } catch (error: any) {

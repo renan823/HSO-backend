@@ -1,11 +1,12 @@
+import { Combination } from "js-combinatorics";
 import Thesaurus from "../thesaurus/Thesaurus";
 
 class Dataframe {
 
     columns: string[];
-    data: any[][];
+    data: Array<any>[];
 
-    constructor (columns: string[] = [], data: any[][] = []) {
+    constructor (columns: string[] = [], data: Array<Array<any>> = []) {
         this.columns = columns;
         this.data = data;
     }
@@ -28,7 +29,7 @@ class Dataframe {
         return this.head(10);
     }
 
-    addColumn (column: string, values: any[], index: number = -1): void {
+    addColumn (column: string, values: Array<any>, index: number = -1): void {
         this.columns.splice(index, 0, column);
 
         values.map((value: any, i: number) => {
@@ -45,7 +46,7 @@ class Dataframe {
 
         if (index >= 0) {
             this.columns.splice(index, 1);
-            this.data.map((row: any[]) => { row.splice(index, 1) });
+            this.data.map((row: Array<any>) => { row.splice(index, 1) });
         }
     }
 
@@ -53,7 +54,7 @@ class Dataframe {
         this.columns = columns;
     }
 
-    addRow (row: any[], index: number = -1): void {
+    addRow (row: Array<any>, index: number = -1): void {
         if (row.length !== 0) {
             this.data.splice(index, 0, row);
         }
@@ -65,16 +66,16 @@ class Dataframe {
         }
     }
 
-    setRows (rows: any[][]): void {
+    setRows (rows: Array<Array<any>>): void {
         this.data = rows;
     }
 
     replace (target: string[], value: string): void {
-        this.data = this.data.map((row: any[]) => row.map((term) => target.includes(term) ? value : term ));
+        this.data = this.data.map((row: Array<any>) => row.map((term) => target.includes(term) ? value : term ));
     }
 
     notNull (): void {
-        this.data = this.data.map((row: any[]) => row.map((term) => {
+        this.data = this.data.map((row: Array<any>) => row.map((term) => {
             if (!term || term === "null") {
                 return "";
             }
@@ -91,14 +92,14 @@ class Dataframe {
         this.data = this.data.map(filter);
     }
 
-    fromJSON (entries: any[]): void {
+    fromJSON (entries: Array<any>): void {
         if (entries.length !== 0) {
             this.columns = Object.keys(entries[0]);
 
             entries.shift();
 
             entries.forEach((entry: any) => {
-                let row: any[] = [];
+                let row: Array<any> = [];
 
                 this.columns.forEach((column) => {
                     row.push(entry[column]);
@@ -109,8 +110,8 @@ class Dataframe {
         }
     }
 
-    exportJSON (): any[] {
-        const entries: any[] = this.data.map((row) => {
+    exportJSON (): Array<any> {
+        const entries: Array<any> = this.data.map((row) => {
             let entry: any = {}
             row.map((item, index) => {
                 if (index < this.columns.length) {
@@ -119,7 +120,6 @@ class Dataframe {
             })
             return entry;
         })
-        
         return entries;
     }
 
@@ -131,6 +131,11 @@ class Dataframe {
             resolve();
         })
     }
-}
+
+    exportRelationSet (): Array<any> {
+        //relate each cell in a row (grouping by 2)
+        return this.data.map(row => new Combination(row, 2).toArray());
+    }
+ }
 
 export default Dataframe;
