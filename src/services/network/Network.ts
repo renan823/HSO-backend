@@ -36,7 +36,7 @@ class Network {
 
     degreeToHSV (degree: number) {
         //hue for purple-like colors
-        return { hue: 270 - ((degree / 100) * 60), saturation: 0.5, value: 1 };
+        return { hue: 270 - ((degree / 100) * 60), saturation: 0.8, value: 1 };
     }
 
     applyLayout (layout: Layout): void {
