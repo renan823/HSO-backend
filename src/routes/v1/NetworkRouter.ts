@@ -15,6 +15,8 @@ class NetworkRouter {
 
     private setRoutes (): void {
         this.handler.post("/new", this.controller.generateNetwork);
+
+        this.handler.get("/thesaurus", this.controller.generateNetworkFromThesaurus);
     }
 
 }

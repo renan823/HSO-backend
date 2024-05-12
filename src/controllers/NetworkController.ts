@@ -3,6 +3,7 @@ import NetworkService from "../services/network/NetworkService";
 import { NetworkData } from "../domain/interfaces";
 import { SerializedGraph } from "graphology-types";
 import ServerException from "../utils/errors/ServerException";
+import ThesaurusService from "../services/thesaurus/ThesaurusService";
 
 class NetworkController {
 
@@ -17,6 +18,18 @@ class NetworkController {
             const network: SerializedGraph = await networkService.createNetwork(filename);
 
             return res.status(201).json({ network });
+        } catch (error: any) {
+            next(new ServerException("Erro ao gerar a rede"));
+        }
+    }
+
+    async generateNetworkFromThesaurus (req: Request, res: Response, next: NextFunction) {
+        const thesaurusService = new ThesaurusService();
+
+        try {
+            const thesaurus = await thesaurusService.getFullThesaurus();
+
+            return res.status(201).json({ network: thesaurus.generateNetwork() });
         } catch (error: any) {
             next(new ServerException("Erro ao gerar a rede"));
         }
