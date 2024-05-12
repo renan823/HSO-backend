@@ -8,7 +8,7 @@ class Network {
     graph: Graph
 
     constructor () {
-        this.graph = new Graph();
+        this.graph = new Graph({ allowSelfLoops: false });
     }
 
     addNode (node: string): void {
@@ -18,7 +18,9 @@ class Network {
     addEdge (nodes: string[]) {
         if (nodes[0].trim().length !== 0 && nodes[1].trim().length) {
             nodes = nodes.sort();
-            this.graph.mergeEdge(nodes[0], nodes[1]);
+            this.graph.updateEdge(nodes[0], nodes[1], (attr) => {
+                return { ...attr, size: (attr.size || 0) + 1, weight: (attr.weight || 0) + 1 };
+            });
         }
     }
 

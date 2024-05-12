@@ -22,9 +22,11 @@ class NetworkService {
             await new Promise<void>((resolve) => {
                 dataframe.exportRelationSet().forEach((row: Array<any>) => {
                     row.forEach((perm: Array<any>) => {
-                        network.addNode(perm[0]);
-                        network.addNode(perm[1]);
-                        network.addEdge(perm)
+                        if (perm[0] !== perm[1]) {
+                            network.addNode(perm[0]);
+                            network.addNode(perm[1]);
+                            network.addEdge(perm)
+                        }
                     });
                 })
 
