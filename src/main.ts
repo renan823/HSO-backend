@@ -6,6 +6,10 @@ import FileRouter from "./routes/v1/FileRouter";
 import DataframeRouter from "./routes/v1/DataframeRouter";
 import ThesaurusRouter from "./routes/v1/ThesaurusRouter";
 import NetworkRouter from "./routes/v1/NetworkRouter";
+import { config } from "dotenv";
+
+//.env config
+config();
 
 const app = express();
 

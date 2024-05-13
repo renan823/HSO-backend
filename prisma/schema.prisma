@@ -13,3 +13,18 @@ datasource db {
 model Synonym {
   id String @id
 }
+
+model User {
+  id        String @id @default(uuid())
+  name      String
+  mail      String @unique
+  password  String
+  role      String 
+  token     RefreshToken?
+}
+
+model RefreshToken {
+  userId     String @id 
+  expiresIn  Int
+  user        User @relation(fields: [userId], references: [id])
+}
