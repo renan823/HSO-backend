@@ -5,14 +5,14 @@ import { Request } from "express";
 
 class UploadMiddleware {
 
-    private url: string = "./uploads";
+    private path: string = "./uploads";
 
     constructor () {};
 
     private storage (): StorageEngine {
         return multer.diskStorage({
             destination: (req, file, cb) => {
-                cb(null, "./uploads");
+                cb(null, this.path);
             },
             filename: (req, file, cb) => {
                 const uniqueSuffix = new Date().toISOString().split(".")[0];

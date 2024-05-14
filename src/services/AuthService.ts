@@ -1,4 +1,4 @@
-import { sign } from "jsonwebtoken";
+import { JwtPayload, sign, verify } from "jsonwebtoken";
 import ServerException from "../utils/errors/ServerException";
 import { PrismaClient } from "@prisma/client";
 
@@ -15,6 +15,18 @@ class AuthService {
             }
         } catch (error: any) {
             throw new ServerException("Erro ao gerar token", 500);
+        }
+    }
+
+    verifyToken (token: string): JwtPayload {
+        if (process.env.SECRET_TOKEN) {
+            try {
+                return verify(token, process.env.SECRET_TOKEN) as JwtPayload
+            } catch (error: any) {
+                throw new ServerException(error.message || "Algo deu errado");
+            }
+        } else {
+            throw new ServerException();
         }
     }
 

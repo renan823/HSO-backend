@@ -5,6 +5,12 @@ import ServerException from "../../utils/errors/ServerException";
 
 class ThesaurusService {
 
+    private readonly prisma: PrismaClient;
+
+    constructor () {
+        this.prisma = new PrismaClient();
+    }
+
     private generateId (words: string[]): string {
         return words.sort().join("<->");
     }
@@ -16,8 +22,7 @@ class ThesaurusService {
     async fillThesaurusWithDataframe (filename: string): Promise<Thesaurus> {
         const thesaurus = new Thesaurus();
         const dataframeService = new DataframeService();
-        const prisma = new PrismaClient();
-
+        
         try {
             if (filename.trim().length !== 0) {
                 const dataframe = await dataframeService.readFromFile(filename);
@@ -28,10 +33,10 @@ class ThesaurusService {
     
             for (const entry of entries) {
                 let data = { id: this.generateId([entry[0], entry[1]]) };
-                let exists = await prisma.synonym.findUnique({ where: { id: data.id } });
+                let exists = await this.prisma.synonym.findUnique({ where: { id: data.id } });
 
                 if (!exists) {
-                    await prisma.synonym.create({ data });
+                    await this.prisma.synonym.create({ data });
                 }
             }
     
@@ -42,19 +47,17 @@ class ThesaurusService {
     }
 
     async addWordAndSynonym (word: string, synonym: string): Promise<void> {
-        const prisma = new PrismaClient();
-
         try {
             if (word.trim().length !== 0 && synonym.trim().length !== 0 && word !== synonym) {
                
                 let data = { id: this.generateId([word, synonym]) };
-                let exists = await prisma.synonym.findUnique({ where: { id: data.id } });
+                let exists = await this.prisma.synonym.findUnique({ where: { id: data.id } });
     
                 if (!exists) {
-                    await prisma.synonym.create({ data });
+                    await this.prisma.synonym.create({ data });
                 }
 
-                let connections = await prisma.synonym.findMany({
+                let connections = await this.prisma.synonym.findMany({
                     where: {
                         OR: [
                             { id: { contains: `${word}<` } },
@@ -69,10 +72,10 @@ class ThesaurusService {
 
                     if (neighbor !== synonym) {
                         let data = { id: this.generateId([neighbor, synonym]) };
-                        let exists = await prisma.synonym.findUnique({ where: { id: data.id } });
+                        let exists = await this.prisma.synonym.findUnique({ where: { id: data.id } });
             
                         if (!exists) {
-                            await prisma.synonym.create({ data });
+                            await this.prisma.synonym.create({ data });
                         }
                     }
                 }
@@ -83,12 +86,10 @@ class ThesaurusService {
     }
 
     async removeSynonym (word: string, synonym: string): Promise<void> {
-        const prisma = new PrismaClient();
-
         try {
             const id =  this.generateId([word, synonym]);
 
-            await prisma.synonym.deleteMany({ 
+            await this.prisma.synonym.deleteMany({ 
                 where: { id } 
             });
         } catch (error: any) {
@@ -97,10 +98,8 @@ class ThesaurusService {
     }
 
     async removeWord (word: string): Promise<void> {
-        const prisma = new PrismaClient();
-
         try {
-            await prisma.synonym.deleteMany({ 
+            await this.prisma.synonym.deleteMany({ 
                 where: {
                     OR: [
                         { id: { contains: `${word}<` } },
@@ -114,11 +113,8 @@ class ThesaurusService {
     }
  
     async getFullThesaurus (): Promise<Thesaurus> {
-        const prisma = new PrismaClient();
-
         try {
-
-            const synonyms = await prisma.synonym.findMany();
+            const synonyms = await this.prisma.synonym.findMany();
             const thesaurus = new Thesaurus();
 
             if (synonyms) {
@@ -135,10 +131,8 @@ class ThesaurusService {
     }
 
     async destroyThesaurus (): Promise<Thesaurus> {
-        const prisma = new PrismaClient();
-
         try {
-            await prisma.synonym.deleteMany();
+            await this.prisma.synonym.deleteMany();
 
             return new Thesaurus();
         } catch (error: any) {

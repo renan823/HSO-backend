@@ -1,8 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import ServerException from "../utils/errors/ServerException";
-import { verify } from "jsonwebtoken";
+import AuthService from "../services/AuthService";
 
 class AuthMiddleware {
+
+    constructor () {};
+
     handle (req: Request, res: Response, next: NextFunction) {
         const auth = req.headers.authorization;
 
@@ -18,8 +21,9 @@ class AuthMiddleware {
 
         try {
             if (process.env.SECRET_TOKEN) {
-                verify(token, process.env.SECRET_TOKEN);
-                return next();
+                if (new AuthService().verifyToken(token)) {
+                    return next();
+                }
             } else {
                 return next(new ServerException());
             }
