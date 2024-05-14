@@ -1,6 +1,6 @@
 import express from "express";
 import FileController from "../../controllers/FileController";
-import uploadMiddleware from "../../middlewares/upload";
+import UploadMiddleware from "../../middlewares/UploadMiddleware";
 
 class FileRouter {
 
@@ -17,7 +17,7 @@ class FileRouter {
     private setRoutes (): void {
         this.handler.get("/all", this.controller.findAllFiles);
 
-        this.handler.post("/save", uploadMiddleware.single("file"), this.controller.saveNewFile);
+        this.handler.post("/save", new UploadMiddleware().handle().single("file"), this.controller.saveNewFile);
     }
 }
 
