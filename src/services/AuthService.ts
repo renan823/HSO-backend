@@ -1,6 +1,7 @@
 import { JwtPayload, sign, verify } from "jsonwebtoken";
 import ServerException from "../utils/errors/ServerException";
 import { PrismaClient } from "@prisma/client";
+import dayjs from "dayjs";
 
 class AuthService {
 
@@ -18,10 +19,12 @@ class AuthService {
         }
     }
 
-    verifyToken (token: string): JwtPayload {
+    verifyToken (token: string): any {
         if (process.env.SECRET_TOKEN) {
             try {
-                return verify(token, process.env.SECRET_TOKEN) as JwtPayload
+                console.log(token)
+                const a = verify(token, process.env.SECRET_TOKEN);
+                return a;
             } catch (error: any) {
                 throw new ServerException(error.message || "Algo deu errado");
             }
@@ -30,19 +33,25 @@ class AuthService {
         }
     }
 
-    async generateRefreshToken (userId: string): Promise<string> {
+    async generateRefreshToken (userId: string): Promise<{ expiresIn: number, userId: string }> {
         const prisma = new PrismaClient();
         try {
             if (process.env.SECRET_TOKEN) {
-                const token = await prisma.refreshToken.create({ data: { userId, expiresIn: 500000 } });
+                await prisma.refreshToken.deleteMany({ where: { userId } });
 
-                return "";
+                const token = await prisma.refreshToken.create({ data: { userId, expiresIn: dayjs().add(59, 's').unix() } });
+
+                return token;
             } else {
                 throw new ServerException("Erro ao gerar token", 500);
             }
         } catch (error: any) {
             throw new ServerException("Erro ao gerar token", 500);
         }
+    }
+
+    isTokenExpired (expiresIn: number): boolean {
+        return dayjs().isAfter(expiresIn);
     }
 }
 

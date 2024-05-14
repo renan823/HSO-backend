@@ -24,7 +24,7 @@ class ThesaurusController {
 
             return res.status(200).json({ thesaurus: thesaurus.generateJSON() });
         } catch (error: any) {
-            next(new ServerException("Erro ao gerar o thesasurus"));
+            next(new ServerException(error.message || "Erro ao gerar o thesaurus", error.status || 500));
         }
     }
 
@@ -40,7 +40,7 @@ class ThesaurusController {
 
             return res.status(200).json({ message: "Conexão adicionada", thesaurus: thesaurus.generateJSON() });
         } catch (error: any) {
-            next(new ServerException("Erro ao gerar o thesasurus"));
+            next(new ServerException(error.message || "Erro ao gerar o thesaurus", error.status || 500));
         }
     }
 
@@ -56,7 +56,7 @@ class ThesaurusController {
 
             return res.status(200).json({ message: "Conexão removida", thesaurus: thesaurus.generateJSON() });
         } catch (error: any) {
-            next(new ServerException("Erro ao gerar o thesasurus"));
+            next(new ServerException(error.message || "Erro ao gerar o thesaurus", error.status || 500));
         }
     }
 
@@ -72,7 +72,7 @@ class ThesaurusController {
 
             return res.status(200).json({ message: "Palavra removida", thesasurus: thesasurus.generateJSON() });
         } catch (error: any) {
-            next(new ServerException("Erro ao gerar o thesasurus"));
+            next(new ServerException(error.message || "Erro ao gerar o thesaurus", error.status || 500));
         }
     }
 
@@ -84,7 +84,7 @@ class ThesaurusController {
 
             return res.status(200).json({ message: "Thesaurus limpo", thesaurus: thesaurus.generateJSON() });
         } catch (error: any) {
-            next(new ServerException("Erro ao gerar o thesasurus"));
+            next(new ServerException(error.message || "Erro ao gerar o thesaurus", error.status || 500));
         }
     }
 }

@@ -25,7 +25,7 @@ class FileController {
 
             return res.status(200).json({ files });
         } catch (error: any) {
-            return next(new ServerException());
+            return next(new ServerException(error.message || "Algo deu errado", error.status || 500));
         }
     }
 }

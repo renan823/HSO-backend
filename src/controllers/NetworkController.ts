@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import NetworkService from "../services/network/NetworkService";
-import { NetworkData } from "../domain/interfaces";
 import { SerializedGraph } from "graphology-types";
 import ServerException from "../utils/errors/ServerException";
 import ThesaurusService from "../services/thesaurus/ThesaurusService";
@@ -20,7 +19,7 @@ class NetworkController {
 
             return res.status(201).json({ network });
         } catch (error: any) {
-            next(new ServerException("Erro ao gerar a rede"));
+            next(new ServerException(error.message || "Erro ao gerar a rede", error.status || 500));
         }
     }
 
@@ -42,7 +41,7 @@ class NetworkController {
             
             return res.status(201).json({ network: network.export() });
         } catch (error: any) {
-            next(new ServerException("Erro ao gerar a rede"));
+            next(new ServerException(error.message || "Erro ao gerar a rede", error.status || 500));
         }
     }
 }

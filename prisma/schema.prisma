@@ -24,7 +24,8 @@ model User {
 }
 
 model RefreshToken {
-  userId     String @id 
+  id         String @id @default(uuid())
+  userId     String @unique
   expiresIn  Int
   user        User @relation(fields: [userId], references: [id])
 }

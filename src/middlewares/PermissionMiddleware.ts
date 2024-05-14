@@ -18,22 +18,26 @@ class PermissionMiddleware {
         if (req.headers.authorization) {
             const [, token] = req.headers.authorization.split(" ");
 
-            if (process.env.SECRET_TOKEN) {
-                const { userId } = new AuthService().verifyToken(token);
-
-                if (userId) {
-                    const data = await this.prisma.user.findFirst({ where: { id: userId }, select: { role: true } });
-
-                    if (data && data.role && this.roles.includes(data.role)) {
-                        return next();
-                    } else {
-                        throw new ServerException("Permissão necessária", 403);
-                    }
-                }
-                throw new ServerException("Erro na autenticação", 400);
+            if (new AuthService().verifyToken(token)) {
+                console.log("nscjnsjcsd")
             }
+
+            const { userId } = new AuthService().verifyToken(token);
+
+            console.log(userId)
+
+            if (userId) {
+                const data = await this.prisma.user.findFirst({ where: { id: userId }, select: { role: true } });
+
+                if (data && data.role && this.roles.includes(data.role)) {
+                    return next();
+                } else {
+                    throw new ServerException("Permissão necessária", 403);
+                }
+            }
+            throw new ServerException("Erro na autenticação", 400);
         }
-        throw new ServerException();
+        throw new ServerException("Erro na autenticação", 400);
     }
 }
 

@@ -7,6 +7,7 @@ import DataframeRouter from "./routes/v1/DataframeRouter";
 import ThesaurusRouter from "./routes/v1/ThesaurusRouter";
 import NetworkRouter from "./routes/v1/NetworkRouter";
 import { config } from "dotenv";
+import UserRouter from "./routes/v1/UserRouter";
 
 //.env config
 config();
@@ -21,6 +22,7 @@ app.use("/api/files", new FileRouter().handler);
 app.use("/api/dataframes", new DataframeRouter().handler);
 app.use("/api/thesaurus", new ThesaurusRouter().handler);
 app.use("/api/network", new NetworkRouter().handler);
+app.use("/api/users", new UserRouter().handler);
 
 app.use(new ErrorMiddleware().handle);
 

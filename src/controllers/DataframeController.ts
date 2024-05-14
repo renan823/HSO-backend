@@ -17,7 +17,7 @@ class DataframeController {
 
             return res.status(200).json({ dataframe: dataframe.sample(10) });
         } catch (error: any) {
-            return next(new ServerException());
+            return next(new ServerException(error.message || "Algo deu errado", error.status || 500));
         }
     }
 
@@ -33,7 +33,7 @@ class DataframeController {
 
             return res.status(200).json({ dataframe: dataframe.sample(10) });
         } catch (error: any) {
-            return next(new ServerException());
+            return next(new ServerException(error.message || "Algo deu errado", error.status || 500));
         }
     }
 
@@ -49,7 +49,7 @@ class DataframeController {
 
             return res.status(200).json({ dataframe: dataframe.sample(10) });
         } catch (error: any) {
-            return next(new ServerException());
+            return next(new ServerException(error.message || "Algo deu errado", error.status || 500));
         }
     }
 
@@ -67,7 +67,7 @@ class DataframeController {
 
             return res.status(200).json({ dataframe: dataframe.sample(10) });
         } catch (error: any) {
-            return next(new ServerException());
+            return next(new ServerException(error.message || "Algo deu errado", error.status || 500));
         }
     }
 }

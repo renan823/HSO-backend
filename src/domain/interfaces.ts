@@ -1,7 +1,3 @@
-export interface NetworkData {
-    [Key: string]: string[]   
-}
-
 export interface User {
     name: string,
     email: string,
@@ -11,7 +7,7 @@ export interface User {
     token?: string
 }
 
-enum Roles {
+export enum Roles {
     ADM = "adm",
     USER = "user"
 }

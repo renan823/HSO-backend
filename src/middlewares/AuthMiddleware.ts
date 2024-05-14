@@ -10,13 +10,13 @@ class AuthMiddleware {
         const auth = req.headers.authorization;
 
         if (!auth) {
-            throw new ServerException("Sem autenticação", 401);
+            return next(new ServerException("Sem autenticação", 401));
         }
 
         const [, token] = auth.split(" ");
 
         if (!token) {
-            throw new ServerException("Sem autenticação", 401);
+            return next(new ServerException("Sem autenticação", 401));
         }
 
         try {
@@ -28,7 +28,7 @@ class AuthMiddleware {
                 return next(new ServerException());
             }
         } catch (error: any) {
-            throw new ServerException(error.message || "Token inválido", 401);
+            return next (new ServerException(error.message || "Token inválido", 401));
         }
     }
 }
