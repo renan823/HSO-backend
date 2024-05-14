@@ -96,8 +96,6 @@ class Dataframe {
         if (entries.length !== 0) {
             this.columns = Object.keys(entries[0]);
 
-            entries.shift();
-
             entries.forEach((entry: any) => {
                 let row: Array<any> = [];
 
