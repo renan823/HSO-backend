@@ -27,20 +27,21 @@ class ThesaurusService {
             if (filename.trim().length !== 0) {
                 const dataframe = await dataframeService.readFromFile(filename);
                 await thesaurus.fillWithDataframe(dataframe);
-            }
-    
-            const entries = thesaurus.generateEntries();
-    
-            for (const entry of entries) {
-                let data = { id: this.generateId([entry[0], entry[1]]) };
-                let exists = await this.prisma.synonym.findUnique({ where: { id: data.id } });
 
-                if (!exists) {
-                    await this.prisma.synonym.create({ data });
-                }
-            }
+                const entries = thesaurus.generateEntries();
     
-            return thesaurus;
+                for (const entry of entries) {
+                    let data = { id: this.generateId([entry[0], entry[1]]) };
+                    let exists = await this.prisma.synonym.findUnique({ where: { id: data.id } });
+
+                    if (!exists) {
+                        await this.prisma.synonym.create({ data });
+                    }
+                }
+    
+                return thesaurus;
+            }
+            throw new ServerException("Erro ao carregar arquivo");
         } catch (error: any) {
             throw new ServerException("Erro ao gerar o thesasurus");
         }

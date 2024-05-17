@@ -21,7 +21,7 @@ class Thesaurus {
         this.addWord(words[0]);
         this.addWord(words[1]);
 
-        this.data.graph.addEdge(words[0], words[1]);
+        this.data.graph.mergeEdge(words[0], words[1]);
     }
 
     private isSynonym (words: string[]): boolean {

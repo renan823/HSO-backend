@@ -2,8 +2,6 @@ import express from "express";
 import FileController from "../../controllers/FileController";
 import UploadMiddleware from "../../middlewares/UploadMiddleware";
 import AuthMiddleware from "../../middlewares/AuthMiddleware";
-import PermissionMiddleware from "../../middlewares/PermissionMiddleware";
-import { Roles } from "../../domain/interfaces";
 
 class FileRouter {
 
@@ -22,7 +20,6 @@ class FileRouter {
 
         this.handler.post("/save", 
             new AuthMiddleware().handle, 
-            //new PermissionMiddleware([Roles.ADM, Roles.USER]).handle,  
             new UploadMiddleware().handle().single("file"), 
             this.controller.saveNewFile
         );

@@ -20,7 +20,9 @@ class ThesaurusController {
         try {
             const { filename } = req.body as { filename: string };
 
-            const thesaurus = await thesaurusService.fillThesaurusWithDataframe(filename);
+            await thesaurusService.fillThesaurusWithDataframe(filename);
+
+            const thesaurus = await thesaurusService.getFullThesaurus();
 
             return res.status(200).json({ thesaurus: thesaurus.generateJSON() });
         } catch (error: any) {
