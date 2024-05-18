@@ -15,7 +15,7 @@ class DataframeController {
         try {
             const dataframe: Dataframe = await dataframeService.readFromFile(filename);
 
-            return res.status(200).json({ dataframe: dataframe.sample(10) });
+            return res.status(200).json({ dataframe: dataframe.sample() });
         } catch (error: any) {
             return next(new ServerException(error.message || "Algo deu errado", error.status || 500));
         }
@@ -31,7 +31,7 @@ class DataframeController {
 
             const dataframe: Dataframe = await dataframeService.readFromFile(filename);
 
-            return res.status(200).json({ dataframe: dataframe.sample(10) });
+            return res.status(200).json({ dataframe: dataframe.sample() });
         } catch (error: any) {
             return next(new ServerException(error.message || "Algo deu errado", error.status || 500));
         }
@@ -47,7 +47,7 @@ class DataframeController {
 
             const dataframe: Dataframe = await dataframeService.readFromFile(filename);
 
-            return res.status(200).json({ dataframe: dataframe.sample(10) });
+            return res.status(200).json({ dataframe: dataframe.sample() });
         } catch (error: any) {
             return next(new ServerException(error.message || "Algo deu errado", error.status || 500));
         }
@@ -65,7 +65,7 @@ class DataframeController {
 
             console.log(dataframe.head(10));
 
-            return res.status(200).json({ dataframe: dataframe.sample(10) });
+            return res.status(200).json({ dataframe: dataframe.sample() });
         } catch (error: any) {
             return next(new ServerException(error.message || "Algo deu errado", error.status || 500));
         }

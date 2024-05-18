@@ -1,5 +1,6 @@
 import express from "express";
 import DataframeController from "../../controllers/DataframeController";
+import AuthMiddleware from "../../middlewares/AuthMiddleware";
 
 class DataframeRouter {
 
@@ -16,11 +17,11 @@ class DataframeRouter {
     private setRoutes (): void {
         this.handler.get("/:filename", this.controller.readDataframe);
 
-        this.handler.post("/alter/drop", this.controller.dropDataframeColumn);
+        this.handler.post("/alter/drop", new AuthMiddleware().handle, this.controller.dropDataframeColumn);
 
-        this.handler.post("/alter/filter",this.controller.applyFiltersToDataframe);
+        this.handler.post("/alter/filter", new AuthMiddleware().handle, this.controller.applyFiltersToDataframe);
 
-        this.handler.post("/alter/replace",this.controller.replaceDataframeWords);
+        this.handler.post("/alter/replace", new AuthMiddleware().handle, this.controller.replaceDataframeWords);
     }
 }
 

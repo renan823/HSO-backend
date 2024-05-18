@@ -10,7 +10,7 @@ class AuthService {
     generateToken (userId: string): string {
         try {
             if (process.env.SECRET_TOKEN) {
-                return sign({ userId }, process.env.SECRET_TOKEN, { expiresIn: '1h' });
+                return sign({ userId }, process.env.SECRET_TOKEN, { expiresIn: dayjs().add(30, 'minutes').unix() });
             } else {
                 throw new ServerException("Erro ao gerar token", 500);
             }
@@ -22,7 +22,6 @@ class AuthService {
     verifyToken (token: string): any {
         if (process.env.SECRET_TOKEN) {
             try {
-                console.log(token)
                 return verify(token, process.env.SECRET_TOKEN);
             } catch (error: any) {
                 throw new ServerException(error.message || "Algo deu errado");
@@ -35,15 +34,11 @@ class AuthService {
     async generateRefreshToken (userId: string): Promise<{ expiresIn: number, userId: string }> {
         const prisma = new PrismaClient();
         try {
-            if (process.env.SECRET_TOKEN) {
-                await prisma.refreshToken.deleteMany({ where: { userId } });
+            await prisma.refreshToken.deleteMany({ where: { userId } });
 
-                const token = await prisma.refreshToken.create({ data: { userId, expiresIn: dayjs().add(30, 'minute').unix() } });
+            const token = await prisma.refreshToken.create({ data: { userId, expiresIn: dayjs().add(24, 'h').unix() } });
 
-                return token;
-            } else {
-                throw new ServerException("Erro ao gerar token", 500);
-            }
+            return token;
         } catch (error: any) {
             throw new ServerException("Erro ao gerar token", 500);
         }

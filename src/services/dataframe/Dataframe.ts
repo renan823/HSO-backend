@@ -4,7 +4,7 @@ import Thesaurus from "../thesaurus/Thesaurus";
 class Dataframe {
 
     columns: string[];
-    data: Array<any>[];
+    data: Array<Array<any>>;
 
     constructor (columns: string[] = [], data: Array<Array<any>> = []) {
         this.columns = columns;
@@ -23,10 +23,22 @@ class Dataframe {
         return new Dataframe (this.columns, data);
     }
 
-    sample (n: number = 5): Dataframe {
-        //not implemented yet
+    sample (): Dataframe {
+        const data = [];
+        const rows: Array<number> = [];
 
-        return this.head(10);
+        for (let i = 0; i < 10; i++) {
+            let index = Math.floor(Math.random() * this.data.length);
+
+            while (rows.includes(index)) {
+                index = Math.floor(Math.random() * this.data.length);
+            }
+
+            data.push(this.data[index]);
+            rows.push(index);
+        }
+
+        return new Dataframe (this.columns, data);
     }
 
     addColumn (column: string, values: Array<any>, index: number = -1): void {

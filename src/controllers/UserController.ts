@@ -16,7 +16,7 @@ class UserController {
 
             return res.status(201).json({ user: createdUser });
         } catch (error: any) {
-            next(new ServerException(error.message || "Algo deu errado", error.status || 500));
+            return next(new ServerException(error.message || "Algo deu errado", error.status || 500));
         }
     }
 
@@ -29,7 +29,7 @@ class UserController {
 
             return res.status(200).json({ ...auth });
         } catch (error: any) {
-            next(new ServerException(error.message || "Algo deu errado", error.status || 500));
+            return next(new ServerException(error.message || "Algo deu errado", error.status || 500));
         }
     }
 
@@ -42,7 +42,8 @@ class UserController {
 
             return res.status(200).json({ token, refresh });
         } catch (error: any) {
-            next(new ServerException(error.message || "Algo deu errado", error.status || 500));
+            console.log(error)
+            return next(new ServerException(error.message || "Algo deu errado", error.status || 500));
         }
     }
 }
