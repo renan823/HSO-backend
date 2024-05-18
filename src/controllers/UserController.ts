@@ -32,6 +32,19 @@ class UserController {
             next(new ServerException(error.message || "Algo deu errado", error.status || 500));
         }
     }
+
+    async refreshUserToken (req: Request, res: Response, next: NextFunction) {
+        const { tokenId } = req.body as { tokenId: string };
+        const userService = new UserService();
+
+        try {
+            const { token, refresh } = await userService.refreshUserToken(tokenId);
+
+            return res.status(200).json({ token, refresh });
+        } catch (error: any) {
+            next(new ServerException(error.message || "Algo deu errado", error.status || 500));
+        }
+    }
 }
 
 export default UserController;

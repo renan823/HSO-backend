@@ -17,6 +17,8 @@ class UserRouter {
         this.handler.post("/new", this.controller.createUser);
 
         this.handler.post("/auth/login", this.controller.authenticateUser);
+
+        this.handler.post("/auth/refresh", this.controller.refreshUserToken);
     }
 }
 
