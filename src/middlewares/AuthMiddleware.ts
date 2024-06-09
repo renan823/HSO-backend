@@ -20,7 +20,8 @@ class AuthMiddleware {
         }
 
         try {
-            if (new AuthService().verifyToken(token)) {
+            const payload = new AuthService().verifyToken(token)
+            if (payload && payload.userId) {
                 return next();
             }
 

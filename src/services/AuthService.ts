@@ -14,7 +14,7 @@ class AuthService {
         }
 
         try {
-            return sign({ userId }, process.env.SECRET_TOKEN, { expiresIn: dayjs().add(30, 'minutes').unix() });
+            return sign({ userId }, process.env.SECRET_TOKEN, { expiresIn: dayjs().add(1, 'minutes').unix() });
         } catch (error: any) {
             throw new ServerException("Erro ao gerar token", 500);
         }
