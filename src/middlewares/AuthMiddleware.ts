@@ -20,13 +20,11 @@ class AuthMiddleware {
         }
 
         try {
-            if (process.env.SECRET_TOKEN) {
-                if (new AuthService().verifyToken(token)) {
-                    return next();
-                }
-            } else {
-                return next(new ServerException());
+            if (new AuthService().verifyToken(token)) {
+                return next();
             }
+
+            return next(new ServerException());
         } catch (error: any) {
             return next (new ServerException(error.message || "Token inválido", 401));
         }

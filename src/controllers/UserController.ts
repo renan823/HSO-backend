@@ -28,7 +28,7 @@ class UserController {
         try {
             const { user, token, refresh } = await userService.authenticateUser(email, password);
 
-            res.cookie("refresh", JSON.stringify(refresh), { maxAge: 7 * 24 * 60 * 60 * 1000, httpOnly: true });
+            res.cookie("refresh", refresh, { maxAge: 7 * 24 * 60 * 60 * 1000, httpOnly: true });
 
             return res.status(200).json({ user, token });
         } catch (error: any) {
@@ -37,13 +37,13 @@ class UserController {
     }
 
     async refreshUserToken (req: Request, res: Response, next: NextFunction) {
-        const tokenId = JSON.parse(req.cookies['refresh']).id;
+        const oldRefresh = req.cookies['refresh'];
         const userService = new UserService();
 
         try {
-            const { token, refresh } = await userService.refreshUserToken(tokenId);
+            const { token, refresh } = await userService.refreshUserToken(oldRefresh);
 
-            res.cookie("refresh", JSON.stringify(refresh), { maxAge: 7 * 24 * 60 * 60 * 1000, httpOnly: true });
+            res.cookie("refresh", refresh, { maxAge: 7 * 24 * 60 * 60 * 1000, httpOnly: true });
 
             return res.status(200).json({ token });
         } catch (error: any) {
@@ -52,11 +52,11 @@ class UserController {
     }
 
     async logoutUser (req: Request, res: Response, next: NextFunction) {
-        const tokenId = JSON.parse(req.cookies["refresh"]).id;
+        const refresh = req.cookies["refresh"]
         const authService = new AuthService();
 
         try {
-            await authService.removeRefreshToken(tokenId);
+            await authService.removeRefreshToken(refresh);
 
             res.cookie("refresh", "", { maxAge: 0 });
 

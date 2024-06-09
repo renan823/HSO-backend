@@ -9,9 +9,13 @@ class ThesaurusController {
     async getThesaurus (req: Request, res: Response, next: NextFunction) {
         const thesaurusService = new ThesaurusService();
 
-        const thesaurus = await thesaurusService.getFullThesaurus();
+        try {
+            const thesaurus = await thesaurusService.getFullThesaurus();
 
-        return res.status(200).json({ thesaurus: thesaurus.generateJSON() });
+            return res.status(200).json({ thesaurus: thesaurus.generateJSON() });
+        } catch (error: any) {
+            next(new ServerException(error.message || "Erro ao gerar o thesaurus", error.status || 500));
+        }
     }
 
     async fillThesaurus (req: Request, res: Response, next: NextFunction) {

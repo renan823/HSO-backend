@@ -6,8 +6,8 @@ import AuthService from "../AuthService";
 
 interface AuthenticateUserReturn {
     token: string, 
-    refresh: { expiresIn: number, userId: string, id: string }, 
-    user: any
+    refresh: string, 
+    user: { name: string, email: string, id: string, role: string }
 }
 
 class UserService {
@@ -33,20 +33,41 @@ class UserService {
                     name: user.name, 
                     email: user.email, 
                     password: this.hashPassword(user.password), 
-                    role: user.role 
+                    role: user.role,
+                    tokenId: ""
                 } 
             });
 
             return createdUser;
         } catch (error: any) {
-            console.log(error)
             throw new ServerException(error.message || "Erro ao criar usuário", error.status || 500);
         }
     }
 
     async updateUser (user: User): Promise<User> {
         try {
-            const updatedUser = await this.prisma.user.update({ where: { id: user.id }, data: { name: user.name, email: user.email, password: user.password, role: user.role } })
+            const updatedUser = await this.prisma.user.update({ 
+                where: { id: user.id }, 
+                data: { 
+                    name: user.name, 
+                    email: user.email, 
+                    password: user.password, 
+                    role: user.role 
+                } 
+            });
+        
+            return updatedUser;
+        } catch (error: any) {
+            throw new ServerException(error.message || "Erro ao editar usuário", error.status || 500);
+        }
+    }
+
+    async updateUserToken (user: User, token: string): Promise<User> {
+        try {
+            const updatedUser = await this.prisma.user.update({ 
+                where: { id: user.id }, 
+                data: { tokenId: token } 
+            });
         
             return updatedUser;
         } catch (error: any) {
@@ -98,33 +119,35 @@ class UserService {
         }
     }
 
-    async refreshUserToken (tokenId: string): Promise<{ token: string, refresh?: any }> {
+    async refreshUserToken (refresh: string): Promise<{ token: string, refresh: string}> {
         try {
-            const refresh = await this.prisma.refreshToken.findFirst({ where: { id: tokenId } });
-
             if (!refresh) {
                 throw new ServerException("Token inválido", 401);
             }
 
             const authService = new AuthService();
 
-            const token = authService.generateToken(refresh.userId);
+            const payload = await authService.verifyRefresh(refresh);
 
-            if (authService.isTokenExpired(refresh.expiresIn)) {
-                const newRefresh = await authService.generateRefreshToken(refresh.userId);
-
-                return { token, refresh: newRefresh };
+            if (payload === null) {
+                throw new ServerException();
             }
 
-            return { token, refresh };
+            const newRefresh = await authService.generateRefreshToken(payload.userId);
+            const newToken = authService.generateToken(payload.userId);
+
+            return { refresh: newRefresh, token: newToken };
+
         } catch (error: any) {
             throw new ServerException(error.message || "Algo deu errado");
         }
     }
 
-    async logoutUser (userId: string): Promise<void> {
+    async logoutUser (refresh: string): Promise<void> {
         try {
-            await this.prisma.refreshToken.deleteMany({ where: { userId } });
+            const authService = new AuthService();
+
+            await authService.removeRefreshToken(refresh);
         } catch (error: any) {
             throw new ServerException();
         }
