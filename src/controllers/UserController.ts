@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { User } from "../domain/interfaces";
 import UserService from "../services/user/UserService";
 import ServerException from "../utils/errors/ServerException";
+import AuthService from "../services/AuthService";
 
 class UserController {
     
@@ -25,24 +26,42 @@ class UserController {
         const userService = new UserService();
 
         try {
-            const auth = await userService.authenticateUser(email, password);
+            const { user, token, refresh } = await userService.authenticateUser(email, password);
 
-            return res.status(200).json({ ...auth });
+            res.cookie("refresh", JSON.stringify(refresh), { maxAge: 7 * 24 * 60 * 60 * 1000, httpOnly: true });
+
+            return res.status(200).json({ user, token });
         } catch (error: any) {
             return next(new ServerException(error.message || "Algo deu errado", error.status || 500));
         }
     }
 
     async refreshUserToken (req: Request, res: Response, next: NextFunction) {
-        const { tokenId } = req.body as { tokenId: string };
+        const tokenId = JSON.parse(req.cookies['refresh']).id;
         const userService = new UserService();
 
         try {
             const { token, refresh } = await userService.refreshUserToken(tokenId);
 
-            return res.status(200).json({ token, refresh });
+            res.cookie("refresh", JSON.stringify(refresh), { maxAge: 7 * 24 * 60 * 60 * 1000, httpOnly: true });
+
+            return res.status(200).json({ token });
         } catch (error: any) {
-            console.log(error)
+            return next(new ServerException(error.message || "Algo deu errado", error.status || 500));
+        }
+    }
+
+    async logoutUser (req: Request, res: Response, next: NextFunction) {
+        const tokenId = JSON.parse(req.cookies["refresh"]).id;
+        const authService = new AuthService();
+
+        try {
+            await authService.removeRefreshToken(tokenId);
+
+            res.cookie("refresh", "", { maxAge: 0 });
+
+            return res.status(200).json({ token: "" });
+        } catch (error: any) {
             return next(new ServerException(error.message || "Algo deu errado", error.status || 500));
         }
     }

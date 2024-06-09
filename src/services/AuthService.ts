@@ -31,7 +31,7 @@ class AuthService {
         }
     }
 
-    async generateRefreshToken (userId: string): Promise<{ expiresIn: number, userId: string }> {
+    async generateRefreshToken (userId: string): Promise<{ expiresIn: number, userId: string, id: string }> {
         const prisma = new PrismaClient();
         try {
             await prisma.refreshToken.deleteMany({ where: { userId } });
@@ -41,6 +41,20 @@ class AuthService {
             return token;
         } catch (error: any) {
             throw new ServerException("Erro ao gerar token", 500);
+        }
+    }
+
+    async removeRefreshToken (tokenId: string): Promise<void> {
+        const prisma = new PrismaClient();
+        try {
+            const refresh = await prisma.refreshToken.findFirst({ where: { id: tokenId } });
+
+            if (refresh && refresh.userId) {
+                await prisma.refreshToken.deleteMany({ where: { userId: refresh.userId } });
+            }
+
+        } catch (error: any) {
+            throw new ServerException("Erro ao excluir token", 500);
         }
     }
 

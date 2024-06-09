@@ -8,15 +8,17 @@ import ThesaurusRouter from "./routes/v1/ThesaurusRouter";
 import NetworkRouter from "./routes/v1/NetworkRouter";
 import { config } from "dotenv";
 import UserRouter from "./routes/v1/UserRouter";
+import cookieParser from "cookie-parser";
 
 //.env config
 config();
 
 const app = express();
 
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors({ origin: "http://localhost:3000" }));
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 
 app.use("/api/files", new FileRouter().handler);
 app.use("/api/dataframes", new DataframeRouter().handler);
@@ -31,7 +33,8 @@ async function main () {
         app.listen({ port: 5000 });
         console.log("server ready");
     } catch (error: any) {
-        process.exit(1);    }
+        process.exit(1);    
+    }
 }
 
 main();

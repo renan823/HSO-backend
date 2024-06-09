@@ -6,7 +6,7 @@ import AuthService from "../AuthService";
 
 interface AuthenticateUserReturn {
     token: string, 
-    refresh: { expiresIn: number, userId: string }, 
+    refresh: { expiresIn: number, userId: string, id: string }, 
     user: any
 }
 
@@ -116,7 +116,7 @@ class UserService {
                 return { token, refresh: newRefresh };
             }
 
-            return { token };
+            return { token, refresh };
         } catch (error: any) {
             throw new ServerException(error.message || "Algo deu errado");
         }
